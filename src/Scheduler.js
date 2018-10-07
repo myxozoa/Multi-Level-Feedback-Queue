@@ -26,15 +26,16 @@ class Scheduler {
     run() {
         while(!this.allQueuesEmpty()) {
             const slice = Date.now() - this.clock;
-            this.clock -= slice;
             if (!this.blockingQueue.isEmpty()) {
-                this.blockingQueue.doBlockingWork(this.clock);
+                this.blockingQueue.doBlockingWork(slice);
             }
             for (let i = 0; i < this.runningQueues.length; i++) {
                 if (!this.runningQueues[i].isEmpty()) {
-                    this.runningQueues[i].doCPUWork(this.clock);
+                    this.runningQueues[i].doCPUWork(slice);
+                    break;
                 }
             }
+            this.clock = Date.now();
         }
     }
 
